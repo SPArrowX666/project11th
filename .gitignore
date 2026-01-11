@@ -1,0 +1,14 @@
+# .gitignore（追加）
+.env
+venv/
+__pycache__/
+*.pyc
+db.sqlite3
+
+# エディタ・OS依存
+.vscode/
+.idea/
+.DS_Store
+# Django特有
+db.sqlite3
+*.log

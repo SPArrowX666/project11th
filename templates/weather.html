@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>お天気アプリ</title>
+</head>
+<body>
+
+<h1>天気予報アプリ</h1>
+
+<form method="get">
+    <label>都市を選択:</label>
+    <select name="city">
+        <option value="Kanazawa">金沢</option>
+        <option value="Tokyo">東京</option>
+        <option value="Osaka">大阪</option>
+        <option value="Sapporo">札幌</option>
+        <option value="Naha">那覇</option>
+    </select>
+    <button type="submit">検索</button>
+</form>
+
+<hr>
+
+<div style="border:1px solid #ccc; padding:15px; width:300px;">
+    <h2>{{ city }} の現在の天気</h2>
+    <p>気温: {{ temperature }} ℃</p>
+    <p>風速: {{ windspeed }} km/h</p>
+    <p>天気コード: {{ weathercode }}</p>
+</div>
+
+</body>
+</html>
