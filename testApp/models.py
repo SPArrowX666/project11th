@@ -1,22 +1,28 @@
-# app/models.py
 from django.db import models
-from django.contrib.auth.models import User # Django組み込みのUserモデルをインポート
+from django.utils import timezone
 
-class Post(models.Model):
-    class Meta:
-        app_label = 'testApp'
+class TrainingRecord(models.Model):
+    TRAINING_TYPES = [
+        ('drill', '基礎'),
+        ('match', '試合'),
+        ('footwork', 'フットワーク'),
+        ('gym', '筋トレ'),
+    ]
+    
+    FEELING_TYPES = [
+        ('great', '好調'),
+        ('good', '普通'),
+        ('tired', '疲れた'),
+        ('pain', '痛みあり'),
+    ]
 
-    # 投稿内容：文字数制限のないテキストフィールド
-    content = models.TextField()
-
-    # 投稿日時：データが作成された時に自動で日時を記録
+    # 字段定义
+    date = models.DateField(default=timezone.now, verbose_name="練習日")
+    training_type = models.CharField(max_length=20, choices=TRAINING_TYPES, verbose_name="メニュー")
+    duration = models.IntegerField(help_text="分", verbose_name="練習時間(分)")
+    feeling = models.CharField(max_length=20, choices=FEELING_TYPES, default='good', verbose_name="コンディション")
+    memo = models.TextField(blank=True, verbose_name="練習メモ/反省点")
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # 投稿者：Userモデルと「一対多」の関係で紐づける
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-
     def __str__(self):
-        # 管理画面などで見やすいように、オブジェクトの文字列表現を定義
-        return f'{self.author.username}: {self.content[:20]}'
-    
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+        return f"{self.get_training_type_display()} - {self.date}"

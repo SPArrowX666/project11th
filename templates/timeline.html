@@ -1,15 +1,75 @@
-<!DOCTYPE html> 
-<html> 
-<head> 
-	<title>タイムライン</title> 
-</head> 
-<body> 
-	<h1>タイムライン</h1>
-{% for post in posts %}
-    <hr>
-    <p><strong>{{ post.author.username }}</strong></p>
-    <p>{{ post.content }}</p>
-    <p><small>{{ post.created_at }}</small></p>
-{% endfor %}
-</body> 
-</html>`
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>バドミントン練習ログ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .card { border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .badge-drill { background-color: #0d6efd; }
+        .badge-match { background-color: #dc3545; }
+        .badge-footwork { background-color: #ffc107; color: black; }
+        .badge-gym { background-color: #198754; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark mb-4">
+    <div class="container">
+        <span class="navbar-brand mb-0 h1">🏸 My Badminton Log</span>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card p-4">
+                <h4 class="mb-3">今日の練習</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary w-100">記録を保存する</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <h4 class="mb-3">練習履歴</h4>
+            {% for record in records %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            {% if record.training_type == 'drill' %} <span class="badge badge-drill">基礎</span>
+                            {% elif record.training_type == 'match' %} <span class="badge badge-match">試合</span>
+                            {% elif record.training_type == 'footwork' %} <span class="badge badge-footwork">フット</span>
+                            {% else %} <span class="badge badge-gym">体力</span>
+                            {% endif %}
+                            {{ record.get_training_type_display }}
+                        </h5>
+                        <small class="text-muted">{{ record.date }}</small>
+                    </div>
+                    <hr>
+                    <p class="card-text">{{ record.memo|linebreaksbr }}</p>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-secondary">⏱ {{ record.duration }} 分</span>
+                        <span class="text-secondary">状態: {{ record.get_feeling_display }}</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                <div class="alert alert-info">まだ記録がありません。練習頑張りましょう！！</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
